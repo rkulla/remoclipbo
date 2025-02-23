@@ -55,7 +55,7 @@ To automatically update the clipboard when `remote-clipboard.txt` changes, creat
 vim ~/Library/LaunchAgents/com.user.remoteclipboard.plist
 ```
 
-Paste the following:
+Paste the following (and make sure to edit the 2 paths with yours):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
