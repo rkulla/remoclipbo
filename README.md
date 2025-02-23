@@ -97,6 +97,23 @@ launchctl load ~/Library/LaunchAgents/com.user.remoteclipboard.plist
 
 ## Raycast Integration
 
+NOTE: You don't have to us raycast, if you prefer other keyboard shortcut apps.
+
+In `Settings>Extensions>Script Commands` click Add Directories, then add ~/.config/raycast/scripts/remoclipbo.sh and mkdir that locally and put my bash scripts in there and make them executable. Example of calling ~/bin/remoclipbo:
+
+    #!/bin/bash
+    # Required parameters:
+    # @raycast.schemaVersion 1
+    # @raycast.title Secure Copy Clipboard
+    # @raycast.mode silent
+
+    "$HOME/bin/remoclipbo  # Runs this existing bash script 
+
+Note that the comments in the raycast/scripts/remoclipbo.sh file seem to be required, and/or restart Raycast, before it will detect the script. It will then show the script under `Settings>Extensions>Script Commands` so you can add a hotkey to it. I map it to HYPER+C
+
+Note: There's need to run 'Create Script Command' unless wanting to publish it publicly
+
+
 - **Hyper+H** mapped to `Clipboard History` to see the clipboard contents.
 - **Hyper+R** mapped to `Remote-clipboard.txt` quicklink to see `remote-clipboard.txt`.
 
