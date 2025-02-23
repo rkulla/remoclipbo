@@ -97,7 +97,7 @@ launchctl load ~/Library/LaunchAgents/com.user.remoteclipboard.plist
 
 ## Raycast Integration
 
-NOTE: You don't have to us raycast, if you prefer other keyboard shortcut apps.
+NOTE: You don't have to use [raycast](https://www.raycast.com/), if you prefer other keyboard shortcut apps.
 
 In `Settings>Extensions>Script Commands` click Add Directories, then add ~/.config/raycast/scripts/remoclipbo.sh and mkdir that locally and put my bash scripts in there and make them executable. Example of calling ~/bin/remoclipbo:
 
