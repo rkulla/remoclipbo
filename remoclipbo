@@ -1,0 +1,34 @@
+#!/bin/bash
+# remoclipbo securely copies contents of your clipboard to a remote machine
+# without the need for virtual KVM software like Sharemouse, Synergy, etc.
+#
+# Requirements: MacOS using bash, pbcopy and pbpaste commands
+# See https://github.com/rkulla/remoclipbo for how to automate it with shortcuts!
+#
+# Usage:
+#   On BOTH machines, put remoclipbo in your $PATH and make it executable
+#   Simply run it:
+#     $ remoclipbo 
+#   will write the contents of your clipboard to ~/remote-clipboard.txt
+#   and then scp it to the remote machine's ~/remote-clipboard.txt.
+#
+#   Running:
+#     $ remoclipbo -c
+#   will read ~/remote-clipboard.txt and copy its contents to the clipboard.
+#
+# make sure to edit the value of `REMOTE` below, to point to the host to copy to. Ex:
+#   On your work machine, ~/bin/remoclipbo should exist but copies to your home machine.
+#   On your home machine, ~/bin/remoclipbo should exist but copies to your work machine.
+
+REMOTE='<user@host>:~/' # Edit this line to point to the host to copy to
+FILENAME="$HOME/remote-clipboard.txt"
+
+if [[ "$1" == "-c" ]]; then
+    # Copy the contents of remote-clipboard.txt to clipboard
+    pbcopy < "$FILENAME"
+else
+    # Copy clipboard contents to remote-clipboard.txt and send it to the remote machine
+    pbpaste > "$FILENAME"
+    sleep 1 # Ensures pbpaste captures content before sending
+    scp "$FILENAME" "$REMOTE"
+fi
