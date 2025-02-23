@@ -107,7 +107,7 @@ In `Settings>Extensions>Script Commands` click Add Directories, then add ~/.conf
     # @raycast.title Secure Copy Clipboard
     # @raycast.mode silent
 
-    "$HOME/bin/remoclipbo  # Runs this existing bash script 
+    "$HOME/bin/remoclipbo"
 
 Note that the comments in the raycast/scripts/remoclipbo.sh file seem to be required, and/or restart Raycast, before it will detect the script. It will then show the script under `Settings>Extensions>Script Commands` so you can add a hotkey to it. I map it to HYPER+C
 
