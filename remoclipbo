@@ -11,6 +11,8 @@
 #     $ remoclipbo 
 #   will write the contents of your clipboard to ~/remote-clipboard.txt
 #   and then scp it to the remote machine's ~/remote-clipboard.txt.
+#   NOTE: After a default of 15 seconds, it will automatically clear the 
+#   remote clipboard. Adjust script if you don't want that functionality.
 #
 #   Running:
 #     $ remoclipbo -c
@@ -20,7 +22,7 @@
 #   On your work machine, ~/bin/remoclipbo should exist but copies to your home machine.
 #   On your home machine, ~/bin/remoclipbo should exist but copies to your work machine.
 
-REMOTE='<user@host>:~/' # Edit this line to point to the host to copy to
+REMOTE='<user@host>' # Edit this line to point to the host to copy to
 FILENAME="$HOME/remote-clipboard.txt"
 
 if [[ "$1" == "-c" ]]; then
@@ -30,5 +32,11 @@ else
     # Copy clipboard contents to remote-clipboard.txt and send it to the remote machine
     pbpaste > "$FILENAME"
     sleep 1 # Ensures pbpaste captures content before sending
-    scp "$FILENAME" "$REMOTE"
+    scp "$FILENAME" "$REMOTE:$HOME"
+
+    # After 15 secs, we'll clear the clipboard on the remote machine only
+    # If you don't want this functionality comment out the block below
+    sleep 15
+    # Send an empty string to the remote clipboard file to clear its contents
+    ssh "$REMOTE" 'echo -n > ~/remote-clipboard.txt'
 fi

@@ -37,6 +37,10 @@ remoclipbo
 
 This writes the clipboard contents to `~/remote-clipboard.txt` and transfers it to the remote machine via `scp`.
 
+**IMPORTANT:** After 15 seconds, it will clear the remote's ~/remote-clipboard.txt for security reasons. If you
+have the launchagent installed below, that means it will also clear the remote's actual clipboard after 15 seconds.
+If you don't want this behavior, adjust it in the ~/remoclipbo script itself. See the comments in the script.
+
 ### Retrieve clipboard from remote machine
 
 To copy the remote clipboard contents back to your local clipboard, run:
