@@ -14,7 +14,7 @@ See [remoclipbo GitHub repository](https://github.com/rkulla/remoclipbo) for how
 
 ## Installation
 
-1. Download the `remoclipbo` script and place it in your `$PATH` (e.g., `~/bin/`).
+1. Download `remoclipbo` and place it in your `$PATH` (e.g., `~/bin/`).
 2. Make it executable:
    ```bash
    chmod +x ~/bin/remoclipbo
@@ -48,7 +48,7 @@ If no value is provided, it defaults to **15 seconds**.
 remoclipbo -c
 ```
 This will read `~/remote-clipboard.txt` and copy its contents to the clipboard.  
-Useful if you ran this script from another machine and want to put the contents  
+Useful if you ran this from another machine and want to put the contents  
 of `~/remote-clipboard.txt` into your clipboard.  
 Ideally, you will automate this part. See `README.md`.
 
