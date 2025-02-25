@@ -2,7 +2,7 @@
 
 ## Overview
 
-`remoclipbo` securely copies the contents of your clipboard to a remote machine without the need for virtual KVM software like Sharemouse, Synergy, etc.
+`remoclipbo` securely copies the contents of your clipboard to a remote machine. 
 
 ## Requirements
 
@@ -26,30 +26,38 @@ See [remoclipbo GitHub repository](https://github.com/rkulla/remoclipbo) for how
 
 ## Usage
 
-### Copy clipboard to remote machine
+First make sure to EDIT the remoclipbo script to update the REMOTE variable at the top of the script to point to the `user@host` you want to copy to. Also make sure `remoclipbo` is in your `$PATH` and executable. 
 
-On **both machines**, ensure `remoclipbo` is in your `$PATH` and executable.
-Run:
+### Copy clipboard contents to remote machine
 
-```bash
+```sh
 remoclipbo
 ```
+This will paste the contents of your clipboard to `~/remote-clipboard.txt`  
+and then `scp` it to the remote machine's `~/remote-clipboard.txt`.
 
-This writes the clipboard contents to `~/remote-clipboard.txt` and transfers it to the remote machine via `scp`.
+### Copy and clear the remote clipboard after a delay
+```sh
+remoclipbo --clear-after-secs[=<n secs>]
+```
+This will also clear the remote clipboard after `<n secs>`.  
+If no value is provided, it defaults to **15 seconds**.
 
-**IMPORTANT:** After 15 seconds, it will clear the remote's ~/remote-clipboard.txt for security reasons. If you
-have the launchagent installed below, that means it will also clear the remote's actual clipboard after 15 seconds.
-If you don't want this behavior, adjust it in the ~/remoclipbo script itself. See the comments in the script.
-
-### Retrieve clipboard from remote machine
-
-To copy the remote clipboard contents back to your local clipboard, run:
-
-```bash
+### Retrieve local ~/remote-clipboard.txt contents into local clipboard
+```sh
 remoclipbo -c
 ```
+This will read `~/remote-clipboard.txt` and copy its contents to the clipboard.  
+Useful if you ran this script from another machine and want to put the contents  
+of `~/remote-clipboard.txt` into your clipboard.  
+Ideally, you will automate this part. See `README.md`.
 
-This reads `~/remote-clipboard.txt` and copies its contents to your local clipboard.
+### Verify remote clipboard contents without copying
+```sh
+remoclipbo -verify
+```
+This will print the contents of the remote machine’s `~/remote-clipboard.txt`  
+without copying anything. Useful for verifying what was sent to the remote.
 
 ## Automation with launchd
 

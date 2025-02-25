@@ -1,42 +1,68 @@
 #!/bin/bash
 # remoclipbo securely copies contents of your clipboard to a remote machine
-# without the need for virtual KVM software like Sharemouse, Synergy, etc.
 #
 # Requirements: MacOS using bash, pbcopy and pbpaste commands
 # See https://github.com/rkulla/remoclipbo for how to automate it with shortcuts!
 #
 # Usage:
-#   On BOTH machines, put remoclipbo in your $PATH and make it executable
-#   Simply run it:
+#   Put remoclipbo in your $PATH and make it executable.
+#   Make sure to edit the value of `REMOTE` below, to point to the host to copy to. Ex:
+#     On your work machine, ~/bin/remoclipbo should exist but copies to your home machine.
+#     On your home machine, ~/bin/remoclipbo should exist but copies to your work machine.
+#
+#   Running:
 #     $ remoclipbo 
-#   will write the contents of your clipboard to ~/remote-clipboard.txt
+#   will paste the contents of your clipboard to ~/remote-clipboard.txt
 #   and then scp it to the remote machine's ~/remote-clipboard.txt.
-#   NOTE: After a default of 15 seconds, it will automatically clear the 
-#   remote clipboard. Adjust script if you don't want that functionality.
+#
+#   Running:
+#     $ remoclipbo --clear-after-secs[=<n secs>]
+#   will also clear the remote clipboard after <n secs> (default: 15s if no value is given).
 #
 #   Running:
 #     $ remoclipbo -c
 #   will read ~/remote-clipboard.txt and copy its contents to the clipboard.
+#   This is useful for if you ran this script from another machine and want to put the contents 
+#   of ~/remote-clipboard.txt into clipboard. Ideally you will automate this part. See README.md
 #
-# make sure to edit the value of `REMOTE` below, to point to the host to copy to. Ex:
-#   On your work machine, ~/bin/remoclipbo should exist but copies to your home machine.
-#   On your home machine, ~/bin/remoclipbo should exist but copies to your work machine.
-
+#   Running:
+#     $ remoclipbo -verify
+#   will print the contents of the remote machine's ~/remote-clipboard.txt
+#   without copying it over. Useful for verifying what was sent to the remote.
+#
+#
 REMOTE='<user@host>' # Edit this line to point to the host to copy to
 FILENAME="$HOME/remote-clipboard.txt"
+CLEAR_AFTER_SECS=0 # Default to not clearing
 
-if [[ "$1" == "-c" ]]; then
-    # Copy the contents of remote-clipboard.txt to clipboard
-    pbcopy < "$FILENAME"
-else
-    # Copy clipboard contents to remote-clipboard.txt and send it to the remote machine
-    pbpaste > "$FILENAME"
-    sleep 1 # Ensures pbpaste captures content before sending
-    scp "$FILENAME" "$REMOTE:$HOME"
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        -c)
+            pbcopy < "$FILENAME"
+            exit 0
+            ;;
+        -verify)
+            ssh "$REMOTE" 'cat ~/remote-clipboard.txt'
+            exit 0
+            ;;
+        --clear-after-secs*)
+            if [[ "$arg" == "--clear-after-secs" ]]; then
+                CLEAR_AFTER_SECS=15 # Default to 15 if no value is provided
+            else
+                CLEAR_AFTER_SECS="${arg#--clear-after-secs=}"
+            fi
+            ;;
+    esac
+done
 
-    # After 15 secs, we'll clear the clipboard on the remote machine only
-    # If you don't want this functionality comment out the block below
-    sleep 15
-    # Send an empty string to the remote clipboard file to clear its contents
+# Copy clipboard contents to remote-clipboard.txt and send it to the remote machine
+pbpaste > "$FILENAME"
+sleep 1 # Ensures pbpaste captures content before sending
+scp "$FILENAME" "$REMOTE:$HOME"
+
+# Clear the remote clipboard if requested
+if [[ "$CLEAR_AFTER_SECS" -gt 0 ]]; then
+    sleep "$CLEAR_AFTER_SECS"
     ssh "$REMOTE" 'echo -n > ~/remote-clipboard.txt'
 fi
